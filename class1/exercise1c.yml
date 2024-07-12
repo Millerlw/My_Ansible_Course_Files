@@ -1,0 +1,7 @@
+---
+ROUTER1:
+  host: rtr1.me.com
+  username: willywonka
+  password: scrumdiddlyumptious
+  device_type: cisco_ios
+  use_session_log: true
