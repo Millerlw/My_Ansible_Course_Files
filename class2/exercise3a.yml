@@ -1,0 +1,14 @@
+---
+- name: NX-OS Playbook
+  gather_facts: False
+  gather_subset: all
+  hosts: nxos
+
+  tasks:
+    - name: Get show version
+      cisco.nxos.nxos_command:
+        commands: show version
+      register: show_version
+
+    - ansible.builtin.debug:
+        var: show_version

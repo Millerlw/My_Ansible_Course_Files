@@ -1,0 +1,8 @@
+---
+- name: IOS Example
+  hosts: cisco
+  gather_facts: no
+  tasks:
+    - ios_facts:
+
+# run with -vvv to see facts

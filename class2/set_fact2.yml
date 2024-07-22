@@ -1,0 +1,13 @@
+---
+- name: Print out variables
+  hosts: cisco5
+  gather_facts: False
+  vars_prompt:
+    - name: bgp_asn
+      prompt: "Enter BGP AS number: "
+      private: yes
+
+  tasks:
+    - name: Debug fact
+      debug:
+        msg: "{{ bgp_asn }}"

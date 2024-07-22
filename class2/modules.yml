@@ -1,0 +1,14 @@
+---
+- name: Simple Playbook
+  hosts: servers
+  tasks:
+    - ping:
+
+    - debug:
+        msg: Hello World
+
+    - name: Install Netmiko
+      pip:
+        name: netmiko
+        virtualvenv: /home/ktbyers/VENV/py3_venv
+        version: 2.4.2

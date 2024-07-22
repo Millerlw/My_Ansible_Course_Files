@@ -1,0 +1,10 @@
+---
+- name: Exercise 2a
+  gather_facts: False
+  gather_subset: all
+  hosts: cisco
+
+  tasks:
+    - name: Print BGP ASN
+      ansible.builtin.debug:
+        msg: "The ASN for host {{ inventory_hostname }} is {{ bgp_asn }}, the router-id is {{ bgp_router_id }}"

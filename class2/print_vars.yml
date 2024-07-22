@@ -1,0 +1,8 @@
+---
+- name: Print vars
+  hosts: cisco1:cisco2
+  gather_facts: False
+  tasks:
+    - debug:
+        msg: "{{ as_number }} --> {{ bgp_router_id }}"
+

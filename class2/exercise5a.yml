@@ -1,0 +1,13 @@
+---
+- name: Exercise5a
+  gather_facts: False
+  gather_subset: all
+  hosts: juniper
+
+  tasks:
+    - junipernetworks.junos.junos_command:
+        commands: show interfaces terse
+      register: interfaces
+
+    - ansible.builtin.debug:
+        var: interfaces 

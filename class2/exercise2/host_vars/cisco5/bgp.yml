@@ -1,0 +1,3 @@
+---
+bgp_asn: 65201
+bgp_router_id: "{{ loopback0 }}"

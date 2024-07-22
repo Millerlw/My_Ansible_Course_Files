@@ -1,0 +1,47 @@
+---
+- name: Print Out Variables
+  hosts: cisco5
+  gather_facts: False
+  vars:
+    dns1: 8.8.8.8
+    dns2: 8.8.4.4
+  vars_files:
+    - my_vars.yml
+  tasks:
+    - name: Gather Facts from IOS (with register)
+      ios_facts:
+      register: output
+
+    - name: Debug register output
+      debug:
+        msg: "{{ output }}"
+
+    - name: Debug an ansible_fact from cisco5
+      debug:
+        msg: "{{ ansible_net_version }}"
+# Returns
+#ok: [cisco5] => {
+#    "msg": {
+#        "ansible_facts": {
+#            "ansible_net_api": "cliconf",
+#            "ansible_net_gather_network_resources": [],
+#            "ansible_net_gather_subset": [
+#                "default"
+#            ],
+#           "ansible_net_hostname": "cisco5",
+#           "ansible_net_image": "bootflash:packages.conf",
+#           "ansible_net_iostype": "IOS-XE",
+#           "ansible_net_model": "CSR1000V",
+#           "ansible_net_operatingmode": "controller",
+#           "ansible_net_python_version": "3.11.6",
+#           "ansible_net_serialnum": "97LCTXOIVGP",
+#           "ansible_net_system": "ios",
+#           "ansible_net_version": "16.09.03",
+#           "ansible_network_resources": {}
+#       },
+#       "changed": false,
+#       "failed": false
+#   }
+#}
+
+
