@@ -1,0 +1,20 @@
+---
+- name: Exercise 2
+  hosts: nxos1
+  gather_facts: False
+  gather_subset: all
+
+  tasks:
+    - name: Get 'show vlan id'
+      cisco.nxos.nxos_command:
+        commands: "show vlan id {{ item }}"
+      register: vlans
+      loop:
+        - 1
+        - 2
+        - 3
+        - 4
+
+    - name: Print VLANs
+      ansible.builtin.debug:
+        var: vlans['results'][3]['stdout_lines']
