@@ -1,0 +1,23 @@
+---
+- name: Cisco Login Banner
+  hosts: cisco
+  gather_facts: False
+ 
+  tasks:
+    - name: Login Banner
+      cisco.ios.ios_banner:
+        banner: login
+        text: |
+          ###########################
+          # Welcome to the jungle   #
+          # We've got fun and games #
+          ###########################
+        state: present
+      notify: save config
+
+  handlers:
+    - name: save config
+      ios_command:
+        commands: wr
+      changed_when: True
+   

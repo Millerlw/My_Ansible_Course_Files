@@ -1,0 +1,15 @@
+---
+- name: Configure DNS Stuff
+  hosts: cisco1
+  gather_facts: False
+  gather_subset: all
+ 
+  tasks:
+    - name: Set System/DNS Settings
+      cisco.ios.ios_system:
+        hostname: "{{ hostname }}"
+        domain_name: "{{ domain_name }}"
+        name_servers:
+          - "{{ dns_server1 }}"
+          - "{{ dns_server2 }}"
+        

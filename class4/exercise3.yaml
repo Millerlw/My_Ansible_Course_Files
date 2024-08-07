@@ -1,0 +1,24 @@
+---
+- name: Configure NXOS IP Address
+  hosts: nxos
+  gather_facts: False
+  gather_subset: all
+
+  tasks:
+    - name: Configure IP Address
+      cisco.nxos.nxos_l3_interfaces:
+        config:
+          - name: "{{ intf_name }}"
+            ipv4:
+              - address: "{{ intf_address }}/{{ intf_netmask }}"
+        state: merged
+
+    - name: Verify Connectivity
+      ansible.netcommon.net_ping:
+        dest: "{{ peer_ip }}"
+      register: output
+
+    - name: Verify 80% Ping Response
+      ansible.builtin.assert:
+        that:
+          - output.packets_rx >= 4
