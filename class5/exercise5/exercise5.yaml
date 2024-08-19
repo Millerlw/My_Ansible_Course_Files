@@ -1,0 +1,19 @@
+---
+- name: Exercise5
+  hosts: cisco1:cisco2
+  gather_facts: true
+
+  tasks:
+    - name: Use SSH Keys
+      cisco.ios.ios_command:
+        commands: show users
+      register: output
+
+    - name: View users
+      ansible.builtin.debug:
+        var: output.stdout_lines[0]
+
+    - name: User Assert
+      ansible.builtin.assert:
+        that:
+          - '"student1" in output.stdout[0]'

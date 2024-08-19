@@ -1,0 +1,19 @@
+---
+- name: Exercise2
+  hosts: cisco:arista:nxos:juniper
+  gather_facts: true
+
+  tasks:
+    - name: Global Config
+      ansible.builtin.set_fact:
+        config: "{{ lookup('template', 'templates/{{ ansible_network_os }}/global.j2') }}"
+
+    - name: View the intended config
+      ansible.builtin.debug:
+        var: config.splitlines()
+
+    - name: Apply the config
+      vars:
+        ansible_connection: network_cli
+      ansible.netcommon.cli_config:
+        config: "{{ config }}"
