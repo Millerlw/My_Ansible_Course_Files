@@ -1,0 +1,14 @@
+---
+- name: Exercise1b
+  hosts: localhost
+  gather_facts: False
+  
+  tasks:
+    - name: Include example
+      ansible.builtin.include_tasks: "{{ my_task }}"
+      loop:
+        - 10.10.10.1
+        - 10.10.10.2
+        - 10.10.10.3
+        - 10.10.10.4
+

@@ -1,0 +1,11 @@
+---
+- name: Exercise2b
+  hosts: localhost
+  gather_facts: False
+  vars:
+    my_task_alt: subtask1.yml
+  
+  tasks:
+    - name: Include example
+#      ansible.builtin.import_tasks: "{{ my_task }}"
+      ansible.builtin.import_tasks: "{{ my_task_alt }}"

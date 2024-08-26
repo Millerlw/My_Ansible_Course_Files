@@ -1,0 +1,6 @@
+---
+domain_name: montypython.com
+dns_server1: 8.8.8.8
+dns_server2: 8.8.4.4
+ntp_server1: 10.10.1.7
+ntp_server2: 10.9.4.6

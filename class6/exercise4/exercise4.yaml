@@ -1,0 +1,31 @@
+---
+- name: Exercise4
+  hosts: cisco:nxos:arista
+  gather_facts: true
+
+  tasks:
+    - name: IOS Tasks
+      ansible.builtin.import_tasks: ios-task.yml
+      when: ansible_facts.net_iostype is defined and
+            ansible_facts.net_iostype == "IOS"
+      tags:
+        - ios
+
+    - name: IOS-XE Tasks
+      ansible.builtin.import_tasks: ios_xe-task.yml
+      when: ansible_facts.net_iostype is defined and
+            ansible_facts.net_iostype == "IOS-XE"
+      tags:
+        - ios-xe
+
+    - name: NX-OS Tasks
+      ansible.builtin.import_tasks: nxos-task.yml
+      when: 'ansible_network_os == "nxos"'
+      tags:
+        - nxos
+
+    - name: EOS Tasks
+      ansible.builtin.import_tasks: eos-task.yml
+      when: 'ansible_network_os == "eos"'
+      tags:
+        - eos

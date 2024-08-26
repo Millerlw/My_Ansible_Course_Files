@@ -1,0 +1,13 @@
+---
+- name: Exercise3
+  hosts: cisco
+  gather_facts: true
+
+  tasks:
+    - name: IOS tasks
+      ansible.builtin.import_tasks: ios-tasks.yml
+      when: ansible_facts.net_iostype == "IOS"
+
+    - name: IOS-EX tasks
+      ansible.builtin.import_tasks: ios_xe-tasks.yml
+      when: ansible_facts.net_iostype == "IOS-XE"

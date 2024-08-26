@@ -1,0 +1,7 @@
+---
+- name: Exercise5
+  hosts: cisco:nxos:arista
+  gather_facts: true
+
+  roles:
+    - ntp

@@ -1,0 +1,8 @@
+---
+- name: Exercise2a
+  hosts: localhost
+  gather_facts: False
+  
+  tasks:
+    - name: Include example
+      ansible.builtin.include_tasks: subtask1.yml

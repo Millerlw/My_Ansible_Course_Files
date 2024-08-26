@@ -1,0 +1,10 @@
+---
+vrfs:
+  - vrf_name: Gomer
+    route_distinguisher: "65200:1"
+    interfaces:
+      - Loopback1
+  - vrf_name: Goober
+    route_distinguisher: "65200:2"
+    interfaces:
+      - Loopback2

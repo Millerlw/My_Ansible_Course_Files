@@ -1,0 +1,15 @@
+- name: Subtask1
+  ansible.builtin.debug:
+    msg: "What..is the air speed velocity of an unladen swallow?"
+  tags: mp1
+
+- name: Subtask2
+  ansible.builtin.debug:
+    msg: "What do you mean? An African or European swallow?"
+  tags: mp2
+
+- name: Subtask3
+  ansible.builtin.debug:
+    msg: "Huh? I..I don't know that"
+  tags: mp3
+

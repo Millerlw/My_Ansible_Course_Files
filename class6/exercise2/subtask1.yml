@@ -1,0 +1,8 @@
+- name: Include subtask1
+  ansible.builtin.debug:
+    msg: "IP address: {{ item }}"
+  loop:
+    - 10.10.10.1
+    - 10.10.10.2
+    - 10.10.10.3
+    - 10.10.10.4

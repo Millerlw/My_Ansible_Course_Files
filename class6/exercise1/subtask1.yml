@@ -1,0 +1,4 @@
+- name: Include subtask1
+  ansible.builtin.debug:
+    msg: "IP address: {{ item }}"
+
