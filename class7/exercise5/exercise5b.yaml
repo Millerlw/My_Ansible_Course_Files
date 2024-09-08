@@ -1,0 +1,24 @@
+---
+- name: Exercise5b
+  hosts: arista
+  gather_facts: false
+
+  tasks:
+    - name: Get 'show version'
+      arista.eos.eos_command:
+        commands: show version
+      register: output
+
+    - ansible.builtin.debug:
+        msg: "{{ output.stdout_lines[0] }}"
+
+    - ansible.builtin.set_fact:
+        version: "{{ output.stdout[0] }}"
+
+    - name: Parse version
+      ansible.builtin.set_fact:
+        eos_version: "{{ version | regex_search('^Software image version: (\\S+).*$', multiline=True) }}"
+
+    - name: Print EOS Version
+      ansible.builtin.debug:
+        msg: "{{ eos_version }}"

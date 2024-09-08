@@ -1,0 +1,29 @@
+---
+- name: Exercise5a
+  hosts: nxos
+  gather_facts: false
+
+  tasks:
+    - name: Get LLDP Neighbors
+      cisco.nxos.nxos_command:
+        commands: show lldp neighbors
+      register: output
+
+    - ansible.builtin.debug:
+        msg: "{{ output.stdout_lines[0] }}"
+
+    - ansible.builtin.set_fact:
+        neighbors: "{{ output.stdout[0] }}"
+
+    - name: Get fields
+      ansible.builtin.set_fact:
+        fields: "{{ neighbors | regex_findall('^(\\S+)\\s+(Eth\\S+)\\s+\\d+\\s+\\S+\\s+(Ethernet\\S+)', multiline=True) }}"
+
+# multiline = True - From Python, used to get each line because of the beginning ^
+# d = digit
+# s = whitespace
+# S = Non-whitespace
+
+    - name: Print fields
+      ansible.builtin.debug:
+        msg: "{{ fields }}"

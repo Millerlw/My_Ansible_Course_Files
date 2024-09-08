@@ -1,0 +1,27 @@
+---
+- name: Exercise4a
+  hosts: nxos
+  gather_facts: false
+
+  vars:
+    command: show interface
+
+  collections:
+    - clay584.genie
+
+  tasks:
+    - name: Get Interfaces
+      cisco.nxos.nxos_command:
+        commands: "{{ command }}"
+      register: output
+
+    - ansible.builtin.debug:
+        msg: "{{ output }}"
+
+    - name: Convert
+      ansible.builtin.set_fact:
+        genie_output: "{{ output.stdout[0] | clay584.genie.parse_genie(command=command, os=ansible_network_os) }}"
+
+    - name: Display Genie Output
+      ansible.builtin.debug:
+        msg: "{{ genie_output }}"

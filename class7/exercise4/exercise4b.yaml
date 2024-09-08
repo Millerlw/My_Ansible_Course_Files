@@ -1,0 +1,27 @@
+---
+- name: Exercise4b
+  hosts: nxos
+  gather_facts: false
+
+  vars:
+    command: show version
+
+  collections:
+    - clay584.genie
+
+  tasks:
+    - name: Get Version
+      cisco.nxos.nxos_command:
+        commands: "{{ command }}"
+      register: output
+
+    - ansible.builtin.debug:
+        msg: "{{ output }}"
+
+    - name: Convert
+      ansible.builtin.set_fact:
+        genie_output: "{{ output.stdout[0] | clay584.genie.parse_genie(command=command, os=ansible_network_os) }}"
+
+    - name: Display Genie Output
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname}} is running {{ genie_output.platform.software.system_version }}"

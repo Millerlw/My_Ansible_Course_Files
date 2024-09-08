@@ -1,0 +1,30 @@
+---
+- name: Exercise3a
+  hosts: nxos
+  gather_facts: false
+  vars:
+    fsm_template: "cisco_nxos_show_ip_bgp_summary.textfsm"
+
+  tasks:
+    - name: Get BGP Summary
+      cisco.nxos.nxos_command:
+        commands: show ip bgp summary
+      register: output
+
+    - ansible.builtin.debug:
+        msg: "{{ output.stdout_lines[0] }}"
+
+    - ansible.builtin.set_fact:
+        sibs: "{{ output.stdout[0] | parse_cli_textfsm(fsm_template) }}"
+
+    - ansible.builtin.debug:
+        msg: "{{ sibs }}"
+
+    - name: Verify BGP is established
+      ansible.builtin.assert:
+        that:
+          - "'Shut' not in sibs[0]['STATE_PFXRCD']"
+          - "'Idle' not in sibs[0]['STATE_PFXRCD']"
+          - sibs[0]['STATE_PFXRCD'] | int >= 2
+
+      when: sibs != []
