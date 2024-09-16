@@ -1,0 +1,32 @@
+---
+- name: Exercise4
+  hosts: arista
+  gather_facts: false
+
+  tasks:
+    - name: Get Switching Table
+      arista.eos.eos_command:
+        commands: show mac address-table | json
+      register: swTable
+
+    - ansible.builtin.debug:
+        msg: "{{ swTable }}"
+
+    - name: Get unicast table
+      ansible.builtin.set_fact:
+        unicastTable: "{{ swTable.stdout[0].unicastTable.tableEntries }}"
+
+    - ansible.builtin.debug:
+        msg: "{{ unicastTable }}"
+
+    - ansible.builtin.debug:
+        msg: "{{ item }}"
+      loop: "{{ unicastTable }}"
+
+    - name: Create table list
+      ansible.builtin.set_fact:
+        swTable_List: "{{ swTable_List | default([]) + [item.macAddress] }}"
+      loop: "{{ unicastTable }}"
+
+    - ansible.builtin.debug:
+        var: swTable_List

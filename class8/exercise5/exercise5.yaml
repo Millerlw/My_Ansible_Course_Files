@@ -1,0 +1,68 @@
+---
+- name: Add VLANs to NXOS devices
+  hosts: nxos
+  gather_facts: true
+
+  tasks:
+    - name: Add VLANs to NXOS1
+      cisco.nxos.nxos_vlans:
+        config:
+          - vlan_id: 100
+            name: blue100
+          - vlan_id: 101
+            name: blue101
+        state: merged
+      when: ansible_net_hostname == 'nxos1'
+
+    - name: Add VLANs to NXOS2
+      cisco.nxos.nxos_vlans:
+        config:
+          - vlan_id: 200
+            name: blue200
+          - vlan_id: 201
+            name: blue201
+        state: merged
+      when: ansible_net_hostname == 'nxos2'
+
+- name: Crazy Ansible VLAN Stuff
+  hosts: nxos
+  gather_facts: false
+
+  tasks:
+    - name: Get 'show vlan'
+      cisco.nxos.nxos_command:
+        commands: show vlan | json
+      register: vlans
+
+    - ansible.builtin.debug:
+        var: vlans
+
+    - name: Extract VLAN table
+      ansible.builtin.set_fact:
+        vlan_dict: "{{ vlans.stdout[0].TABLE_vlanbrief.ROW_vlanbrief }}"
+
+    - ansible.builtin.debug:
+        var: vlan_dict
+
+    - name: Extract relevant fields
+      ansible.builtin.set_fact:
+        vlan_data: "{{ vlan_dict | map(attribute='vlanshowbr-vlanid') | list }}"
+
+    - name: Display vlan_data, used for common vlans
+      ansible.builtin.debug:
+        var: vlan_data
+
+    - name: Get common vlans
+      ansible.builtin.debug:
+        msg: "Common VLANs: {{ vlan_data | intersect(hostvars['nxos2']['vlan_data']) }}"
+      when: inventory_hostname == 'nxos1'
+
+    - name: Get unique nxos1 VLANs
+      ansible.builtin.debug:
+        msg: "Unique NXOS1 VLANs: {{ vlan_data | difference(hostvars['nxos2']['vlan_data']) }}"
+      when: inventory_hostname == 'nxos1'
+
+    - name: Get unique nxos2 VLANs
+      ansible.builtin.debug:
+        msg: "Unique NXOS2 VLANs: {{ vlan_data | difference(hostvars['nxos1']['vlan_data']) }}"
+      when: inventory_hostname == 'nxos2'

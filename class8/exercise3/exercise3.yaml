@@ -1,0 +1,39 @@
+---
+- name: Exercise3
+  hosts: arista
+  gather_facts: false
+
+  tasks:
+    - name: Get Switching Table
+      arista.eos.eos_command:
+        commands: show mac address-table | json
+      register: swtable
+
+    - ansible.builtin.debug:
+        msg: "{{ swtable.stdout_lines[0]['unicastTable']['tableEntries'] }}"
+
+    - name: Get unicast table
+      ansible.builtin.set_fact:
+        unicast_table: "{{ swtable.stdout[0].unicastTable.tableEntries }}"
+
+    - ansible.builtin.debug:
+        msg: "{{ unicast_table }}"
+
+    - name: Extract data
+      ansible.builtin.set_fact:
+        macList: "{{ unicast_table | map(attribute='macAddress') | list }}"
+        intList: "{{ unicast_table | map(attribute='interface') | list }}"
+
+    - name: Create list of lists
+      ansible.builtin.set_fact:
+        swTable_List: "{{ macList | zip(intList) | list }}"
+
+    - ansible.builtin.debug:
+        msg: "{{ swTable_List }}"
+
+    - name: Convert to dictionary
+      ansible.builtin.set_fact:
+        swTable_Dict: "{{ dict(swTable_List) }}"
+
+    - ansible.builtin.debug:
+        msg: "{{ swTable_Dict }}"

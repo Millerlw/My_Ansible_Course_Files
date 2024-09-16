@@ -1,0 +1,30 @@
+---
+- name: Exercise1
+  hosts: nxos
+  gather_facts: false
+  vars:
+    fsm_template: "cisco_nxos_show_lldp_neighbors.template"
+
+  tasks:
+    - name: Get LLDP Neighbors
+      cisco.nxos.nxos_command:
+        commands: show lldp neighbors
+      register: neighbors
+
+    - ansible.builtin.debug:
+        msg: "{{ neighbors.stdout_lines[0] }}"
+
+    - name: Parse data
+      ansible.builtin.set_fact:
+        lldp_neighs: "{{ neighbors.stdout[0] | parse_cli_textfsm(fsm_template) }}"
+
+    - ansible.builtin.debug:
+        msg: "{{ lldp_neighs }}"
+
+    - name: Crazy Ansible stuff
+      ansible.builtin.set_fact:
+        neigh_map: "{{ neigh_map | default({}) | combine({item['LOCAL_INTERFACE']: item['NEIGHBOR']}) }}"
+      loop: "{{ lldp_neighs }}"
+
+    - ansible.builtin.debug:
+        var: neigh_map
