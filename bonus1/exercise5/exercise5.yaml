@@ -1,0 +1,19 @@
+---
+- name: Exercise5
+  hosts: arista5
+  gather_facts: false
+
+  tasks:
+    - name: Generate config from template
+      ansible.builtin.template:
+        src: "templates/{{ inventory_hostname }}.j2"
+        dest: "CFGS/{{ inventory_hostname }}-load.txt"
+      tags: build
+
+    - name: Config replace
+      napalm.napalm.install_config:
+        replace_config: True
+        commit_changes: False
+        config_file: "CFGS/{{ inventory_hostname }}-load.txt"
+        diff_file: "DIFFS/{{ inventory_hostname }}.txt"
+      tags: deploy

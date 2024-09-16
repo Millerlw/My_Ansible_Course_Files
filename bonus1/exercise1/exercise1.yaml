@@ -1,0 +1,36 @@
+---
+- name: Exercise1
+  hosts: cisco:nxos:arista:juniper
+  gather_facts: false
+
+  vars:
+    napalm_port:
+      nxos: 8443
+      ios: 22
+      eos: 443
+      junos: 830
+
+  tasks:
+    - name: Create 'BUP' directory
+      ansible.builtin.file:
+        path: BUP
+        state: directory
+        mode: '0755'
+      run_once: True
+
+    - name: Create OS subdirectories
+      ansible.builtin.file:
+        path: "BUP/{{ ansible_network_os }}"
+        state: directory
+        mode: '0755'
+
+    - name: Get device configs
+      napalm.napalm.get_facts:
+        filter: config
+        optional_args:
+          port: "{{ napalm_port[ansible_network_os] }}"
+
+    - name: Save configs
+      ansible.builtin.copy:
+        content: "{{ napalm_config.running }}"
+        dest: "BUP/{{ ansible_network_os }}/{{ inventory_hostname }}.txt"

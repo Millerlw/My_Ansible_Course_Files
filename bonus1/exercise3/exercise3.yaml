@@ -1,0 +1,28 @@
+---
+- name: Exercise3
+  hosts: arista5
+  gather_facts: false
+
+  tasks:
+    - name: Generate VLAN config
+      ansible.builtin.template:
+        src: "templates/{{ ansible_network_os }}/vlans.j2"
+        dest: "ASSEMBLE/{{ ansible_network_os }}/10-vlan.cfg"
+
+
+    - name: Generate interface config
+      ansible.builtin.template:
+        src: "templates/{{ ansible_network_os }}/interfaces.j2"
+        dest: "ASSEMBLE/{{ ansible_network_os }}/20-interfaces.cfg"
+
+    - name: Assemble the config
+      ansible.builtin.assemble:
+        src: "ASSEMBLE/{{ ansible_network_os }}/"
+        dest: "CFGS/{{ ansible_network_os }}.cfg"
+
+    - name: Deploy config to device
+      napalm.napalm.install_config:
+        replace_config: False
+        commit_changes: False
+        config_file: "CFGS/{{ ansible_network_os }}.cfg"
+        diff_file: "DIFFS/{{ inventory_hostname }}.txt"

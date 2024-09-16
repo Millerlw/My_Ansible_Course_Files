@@ -1,0 +1,26 @@
+---
+- name: Exercise2
+  hosts: cisco:arista
+  gather_facts: false
+
+  tasks:
+    - name: Get LLDP Neighbors
+      napalm.napalm.get_facts:
+        filter: lldp_neighbors
+      register: output
+
+    - ansible.builtin.debug:
+        var: output
+
+    - name: Not even sure what's happening here
+      ansible.builtin.set_fact:
+        lldp_str: "{{ lldp_str | default('') + item.key + ': ' + item.value[0].hostname + '\n' }}"
+      loop: "{{ napalm_lldp_neighbors | dict2items }}"
+      loop_control:
+        label: "."
+
+    - ansible.builtin.debug:
+        msg: | 
+          ******** LLDP Table for ({{ inventory_hostname }}) ********
+          {{ lldp_str }}
+          >>>>>>>>>>>>>>

@@ -1,0 +1,48 @@
+---
+- name: Exercise4
+  hosts: nxos
+  gather_facts: false
+
+  tasks:
+    - name: Generate interface config
+      ansible.builtin.template:
+        src: interfaces.j2
+        dest: "CFGS/{{ inventory_hostname }}/01-{{ inventory_hostname }}-intf.txt"
+      tags: build
+
+    - name: Generate BGP config
+      ansible.builtin.template:
+        src: bgp.j2
+        dest: "CFGS/{{ inventory_hostname }}/02-{{ inventory_hostname }}-bgp.txt"
+      tags: build
+
+    - name: Assemble config file
+      ansible.builtin.assemble:
+        src: "CFGS/{{ inventory_hostname }}/"
+        dest: "CFGS/{{ inventory_hostname }}-config.txt"
+      tags: build
+
+    - name: Install configs using NAPALM
+      napalm.napalm.install_config:
+        replace_config: False
+        commit_changes: True
+        config_file: "CFGS/{{ inventory_hostname }}-config.txt"
+        diff_file: "DIFFS/{{ inventory_hostname }}.txt"
+        dev_os: nxos_ssh
+      tags: deploy
+
+    - name: Verify BGP config
+      napalm.napalm.get_facts:
+        filter: bgp_neighbors
+        dev_os: nxos_ssh
+      register: bgp_cfg
+      tags: verify
+
+    - ansible.builtin.debug:
+        var: bgp_cfg
+
+    - name: Verify BGP is established with 2 peers
+      ansible.builtin.debug:
+        msg:
+          - "UP: {{ napalm_bgp_neighbors.global.peers[bgp_peer_ip].is_up }}"
+          - "Rcvd Prefixes: {{ napalm_bgp_neighbors.global.peers[bgp_peer_ip].address_family.ipv4.received_prefixes }}"

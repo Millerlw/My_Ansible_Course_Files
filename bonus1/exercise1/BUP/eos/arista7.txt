@@ -1,0 +1,69 @@
+! Command: show running-config
+! device: arista7 (vEOS-lab, EOS-4.28.0F)
+!
+! boot system flash:/vEOS-lab.swi
+!
+no aaa root
+!
+username admin privilege 15 role network-admin secret 5 $1$aM6w809x$tgkc6ZGhcScvELVKVHq3n0
+username admin1 privilege 15 secret 5 $1$7kD0oS/t$wXhtTFwnWwnlPFKWwXoJ70
+username eapi secret 5 $1$Kt0.fwmk$5Q14WW76.w5xBIHwMHNX0/
+username pyclass privilege 15 secret 5 $1$C3VfUfcO$86t4iqCX60yW.NIR8d2Lh0
+!
+transceiver qsfp default-mode 4x10G
+!
+service routing protocols model ribd
+!
+hostname arista7
+!
+spanning-tree mode rapid-pvst
+!
+clock timezone America/Los_Angeles
+!
+vlan 2-7
+!
+management api http-commands
+   protocol https ssl profile selfSignedSSLProfile
+   no shutdown
+!
+management security
+   ssl profile selfSignedSSLProfile
+      certificate self-signed.crt key self-signed.key
+!
+aaa authorization exec default local
+!
+interface Ethernet1
+   spanning-tree portfast
+   spanning-tree cost 1
+!
+interface Ethernet2
+   switchport access vlan 2
+!
+interface Ethernet3
+   switchport access vlan 3
+!
+interface Ethernet4
+   switchport access vlan 4
+!
+interface Ethernet5
+   switchport access vlan 5
+!
+interface Ethernet6
+   switchport access vlan 6
+!
+interface Ethernet7
+   switchport access vlan 7
+!
+interface Management1
+   shutdown
+!
+interface Vlan1
+   ip address 10.220.88.34/24
+!
+ip routing
+!
+ip route 0.0.0.0/0 10.220.88.1
+!
+ntp server 130.126.24.24
+!
+end
