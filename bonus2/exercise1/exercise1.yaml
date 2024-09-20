@@ -1,0 +1,17 @@
+---
+- name: Exercise1
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Moe
+      ansible.builtin.debug:
+        msg: "{{ 'I will squeeze the cider out of you adams apple' | moe }}"
+
+    - name: Larry
+      ansible.builtin.debug:
+        msg: "{{ 'Who are you calling porcupine?' | larry }}"
+
+    - name: Curly
+      ansible.builtin.debug:
+        msg: "{{ 'nyuk, nyuk, nyuk' | curly }}"

@@ -1,0 +1,17 @@
+---
+- name: Exercise5
+  hosts: cisco1
+  gather_facts: false
+
+  tasks:
+    - name: Cisco1 Config Changes
+      # Name must match file in library without the .py
+      netmiko_config:
+        host: "{{ ansible_host }}"
+        device_type: cisco_ios
+        username: "{{ ansible_user }}"
+        password: "{{ ansible_ssh_pass }}"
+        config_list:
+          - logging buffered 20000
+          - no logging console
+      

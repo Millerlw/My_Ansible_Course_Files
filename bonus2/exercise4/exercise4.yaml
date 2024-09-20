@@ -1,0 +1,10 @@
+---
+- name: Exercise4
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Convert to upper case
+      # module name must match name of module file without the .py.  
+      my_module:
+        my_string: Y'all gonna make me lose my mind...up in here
